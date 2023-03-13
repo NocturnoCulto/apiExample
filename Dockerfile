@@ -3,7 +3,7 @@ WORKDIR /app
 
 COPY app/build/lib/* build/lib/
 
-COPY app/build/libs/app.jar build/
+COPY app/build/libs/apiExample.jar build/
 
 WORKDIR /app/build
 ENTRYPOINT java -jar apiExample.jar
