@@ -2,6 +2,8 @@ package pl.umk.allegroworkshop.apiExample.api;
 
 
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +17,12 @@ import java.util.Map;
 @RestController
 public class Controllers {
 
-    Map<String, Person> personMap = new HashMap<>();
+    private Map<String, Person> personMap = new HashMap<>();
+    private Logger logger = LoggerFactory.getLogger(Controllers.class);
 
     @GetMapping(value = "/getNameById", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> getAllMeals(@RequestParam("id") String id) {
+        logger.info("Request for person id={}", id);
         Person person = personMap.get(id) == null ? new Person("Unknown", "Person") : personMap.get(id);
         return ResponseEntity
                 .status(200)
