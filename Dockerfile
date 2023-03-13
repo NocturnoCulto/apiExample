@@ -1,9 +1,9 @@
 FROM openjdk:17-jdk-slim-buster
-WORKDIR /app
+WORKDIR /build
 
-COPY app/build/lib/* build/lib/
+COPY build/libs/* build/lib/
 
-COPY app/build/libs/apiExample.jar build/
+COPY build/libs/apiExample-0.0.1-SNAPSHOT.jar build/
 
-WORKDIR /app/build
-ENTRYPOINT java -jar apiExample.jar
+WORKDIR /build
+ENTRYPOINT java -jar apiExample-0.0.1-SNAPSHOT.jar
