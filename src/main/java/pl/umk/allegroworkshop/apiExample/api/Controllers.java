@@ -1,45 +1,46 @@
 package pl.umk.allegroworkshop.apiExample.api;
 
 
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import pl.umk.allegroworkshop.apiExample.api.model.Person;
-
-import java.util.HashMap;
-import java.util.Map;
+import pl.umk.allegroworkshop.apiExample.api.model.Description;
+import pl.umk.allegroworkshop.apiExample.service.DescriptionService;
 
 @RestController
 public class Controllers {
 
-    private Map<String, Person> personMap = new HashMap<>();
+    private final DescriptionService descriptionService;
+
+    public Controllers(DescriptionService descriptionService) {
+        this.descriptionService = descriptionService;
+    }
+
     private Logger logger = LoggerFactory.getLogger(Controllers.class);
 
-    @GetMapping(value = "/getNameById", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Person> getAllMeals(@RequestParam("id") String id) {
-        logger.info("Request for person id={}", id);
-        Person person = personMap.get(id) == null ? new Person("Unknown", "Person") : personMap.get(id);
+    @GetMapping(value = "/descriptionById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Description> getDescriptionById(@PathVariable("id") String id) throws InterruptedException {
+        logger.info("Request for description id={}", id);
+
+        if (id.equals("170")) {
+            delay(500);
+            return ResponseEntity.status(503).body(null);
+        }
+
+        Description description = descriptionService.getDescriptionById(id);
+        if (description == null) return ResponseEntity.status(404).body(null);
+        delay(description.delay());
         return ResponseEntity
                 .status(200)
-                .body(person);
+                .body(description);
     }
 
-    @PostConstruct
-    private void fillPersonMap() {
-        personMap.put("1", new Person("Waldemar", "Legień"));
-        personMap.put("2", new Person("Antoni", "Zajkowski"));
-        personMap.put("3", new Person("Paweł", "Nastula"));
-        personMap.put("4", new Person("Beata", "Maksymow"));
-        personMap.put("5", new Person("Katarzyna", "Kłys"));
-        personMap.put("6", new Person("Aneta", "Szczepanska"));
-        personMap.put("7", new Person("Rafał", "Kubacki"));
-        personMap.put("8", new Person("Krzysztof", "Wiłkomirski"));
-        personMap.put("9", new Person("Robert", "Krawczyk"));
-        personMap.put("10", new Person("Anna", "Załęczna"));
+    private void delay(int delay) throws InterruptedException {
+        Thread.sleep(delay);
     }
+
 }
